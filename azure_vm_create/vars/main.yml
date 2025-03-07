@@ -1,4 +1,0 @@
----
-# vars file for azure_vm_create
-vm_size: "Standard_D2_v4"
-location: "eastus"
