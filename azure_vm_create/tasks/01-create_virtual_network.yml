@@ -15,6 +15,6 @@
 
         name: "{{ vnet_name }}"
 
-        address_prefixes: "10.0.0.0/16"
+        address_prefixes: "172.18.0.0/16"
 
       register: vnet
