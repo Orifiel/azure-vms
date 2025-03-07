@@ -1,0 +1,261 @@
+--- # Get facts for the user
+
+- name: Create a Virtual Machine on Azure Using Ansible
+  
+  hosts: localhost
+
+  gather_facts: false
+
+  vars:
+
+    vm_name: "azure-vm002"
+
+    vm_size: "Standard_D2_v4"
+
+    admin_username: "wtbc"
+
+    admin_password: "West123@"
+
+    rg_name: "redhat_brasil"
+
+    ssh_pub: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGLbRj7MIj+j0TqZnzsY1WXgE+WDx8GGajRkiwAkq6bOfTZUFg4p7QcXFhfZaNIz/+Kzm01qZaXb2u83NlPqkSi/1PBTjFp8++6e9LWb3BRR4W+MFCg6O0xLx6ngPigZMwVReyyb/ShXQWnSZeoveHdS889SBR+dnmwZArmxaMBY1js/xjC2B7dPif9x0EfTQRECgdbu6iGI3yqX15U+209B8X3nBQNBlphF+gkoGrKlNf7epgDDN1LXgwPi1nET2BecO9m+FdT5aXstrTVfgNTWva5sKWs6OoT2gYe3j+IfUkG0pTI9fYSnDyUHuWR56KmaYcxpts70ZU2ACZv94F wtbc@TDSNX-AAP-CTRL-01"
+    #"/home/wtbc/.ssh/id_rsa_ansible.pub"
+
+    vnet_name: "vnet_by_ansible_02" #"{{vm_name}}-vnet" 
+
+    subnet_name: "subnet_by_ansible_02" #"{{vm_name}}-subnet" #
+
+    storage_account_name:  "strbyansible02" #"{{vm_name}}-storage"
+
+    storage_type: "Standard_LRS"
+
+    location: "eastus"
+
+    subscription_id: 8ab000c0-31b3-4536-ada7-95518604d788
+
+    tenant: dcb51ddf-8169-474d-92da-ee67c281623c
+
+    client_id: 2d4a6a13-9777-41ee-bd03-aba584b02526
+
+    secret: UVq8Q~MjqF2eLKuWPD_mRh4oEh_tpMqdOGzEVbLq
+
+    
+
+  tasks:
+
+    - name: Create a Virtual Network
+
+      azure.azcollection.azure_rm_virtualnetwork:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vnet_name }}"
+
+        address_prefixes: "172.18.0.0/16"
+      register: vnet
+
+
+    - name: Create a subnet
+
+      azure.azcollection.azure_rm_subnet:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        virtual_network_name: "{{ vnet_name }}"
+
+        name: "{{ subnet_name }}"
+
+        address_prefix: "172.18.190.0/24"
+
+      register: subnet
+
+
+
+    - name: Create a public IP address
+
+      azure.azcollection.azure_rm_publicipaddress:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        allocation_method: static
+
+        name: "{{ vm_name }}-public-ip"
+
+      register: public_ip
+
+
+
+    - name: Create a network security group and configure the security group
+
+      azure.azcollection.azure_rm_securitygroup:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vm_name }}-nsg"
+
+        rules:
+
+          - name: "AllowSSH"
+
+            protocol: Tcp
+
+            direction: Inbound
+
+            priority: 1000
+
+            access: Allow
+
+            source_address_prefix: "*"
+
+            source_port_range: "*"
+
+            destination_port_range: "22"
+
+            destination_address_prefix: "*"
+
+      register: nsg
+
+
+
+    - name: Create a Virtual Network Interface Card
+
+      azure.azcollection.azure_rm_networkinterface:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vm_name }}-nic"
+
+        virtual_network: "{{ vnet_name }}"
+
+        subnet_name: "{{ subnet_name }}"
+
+        public_ip_name: "{{ vm_name }}-public-ip"
+
+        security_group: "{{ vm_name }}-nsg"
+
+    
+    
+    - name: Create an Storage Account
+
+      azure_rm_storageaccount:
+    
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+    
+        name: "{{ storage_account_name }}"
+    
+        type: "{{ storage_type }}"
+
+
+
+    - name: Create a Virtual Machine
+
+      azure.azcollection.azure_rm_virtualmachine:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vm_name }}"
+
+        vm_size: "{{ vm_size }}"
+
+        admin_username: "{{ admin_username }}"
+
+        admin_password: "{{ admin_password }}"
+
+        image: 
+
+          offer: "RHEL"
+
+          publisher: "redhat"
+
+          sku: "8-LVM"
+
+          version: "latest"
+        
+        storage_account_name: "{{storage_account_name}}"
+
+        os_disk_caching: ReadWrite
+
+        os_disk_name: "{{ vm_name }}-os-disk"
+
+        network_interface_names:
+
+          - "{{ vm_name }}-nic"
+
+        network_interfaces:
+
+          - name: "{{ vm_name }}-nic"
+
+            properties:
+
+              primary: True
+        ssh_password_enabled: false
+        ssh_public_keys: 
+          - path: /home/{{admin_username}}/.ssh/authorized_keys
+            key_data: "{{ssh_pub}}"
+
+    - name: Get IP Public information
+      ansible.builtin.azure_rm_publicipaddress_info:
+        resource_group: "{{ rg_name }}"
+      register: output_ip
+        
+    - name: Show Public "IP
+      debug:
+        msg: "O IP Público é {{ output_ip.publicipaddresses[0].ip_address }}"
+    
+  

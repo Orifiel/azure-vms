@@ -1,0 +1,197 @@
+--- # Get facts for the user
+
+- name: Delete Resources of a Virtual Machine on Azure Using Ansible
+  
+  hosts: localhost
+
+  gather_facts: false
+
+  vars:
+
+    vm_name: "azure-vm002"
+
+    rg_name: "redhat_brasil"
+
+    vnet_name: "vnet_by_ansible_02"
+
+    subnet_name: "subnet_by_ansible_02"
+
+    storage_account_name: "strbyansible02"
+
+    location: "eastus"
+
+    subscription_id: 8ab000c0-31b3-4536-ada7-95518604d788
+
+    tenant: dcb51ddf-8169-474d-92da-ee67c281623c
+
+    client_id: 2d4a6a13-9777-41ee-bd03-aba584b02526
+
+    secret: UVq8Q~MjqF2eLKuWPD_mRh4oEh_tpMqdOGzEVbLq
+
+    
+
+  tasks:
+
+    - name: Delete a VM
+
+      azure.azcollection.azure_rm_virtualmachine:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vm_name }}"
+
+        state: absent
+
+
+    - name: Delete an Storage Account
+
+      azure_rm_storageaccount:
+    
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+    
+        name: "{{ storage_account_name }}"
+
+        state: absent
+
+        force_delete_nonempty: true
+
+   # - name: Delete a Virtual Network Interface Card
+    #  azure.azcollection.azure_rm_networkinterface:
+
+     #   subscription_id: "{{ subscription_id }}"
+
+      #  tenant: "{{ tenant }}"
+
+       # client_id: "{{ client_id }}"
+
+        #secret: "{{ secret }}"
+
+        #resource_group: "{{ rg_name }}"
+
+        #name: "{{ vm_name }}-nic"
+
+        #state: absent
+
+
+    - name: Delete a network security group 
+
+      azure.azcollection.azure_rm_securitygroup:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vm_name }}-nsg"
+
+        state: absent
+
+
+ #   - name: Delete a public IP address
+
+#      azure.azcollection.azure_rm_publicipaddress:
+
+ #       subscription_id: "{{ subscription_id }}"
+
+  #      tenant: "{{ tenant }}"
+
+   #     client_id: "{{ client_id }}"
+
+    #    secret: "{{ secret }}"
+
+     #   resource_group: "{{ rg_name }}"
+
+      #  name: "{{ vm_name }}-public-ip"
+
+       # state: absent
+
+
+    - name: Delete a subnet
+
+      azure.azcollection.azure_rm_subnet:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        virtual_network_name: "{{ vnet_name }}"
+
+        name: "{{ subnet_name }}"
+
+        state: absent
+        
+
+    - name: Delete a Virtual Network
+
+      azure.azcollection.azure_rm_virtualnetwork:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vnet_name }}"
+
+        state: absent
+
+      
+
+
+
+    
+
+
+
+
+
+    
+
+
+
+    
+
+
+
+    
+
+      
+
+    
+    
+    
+
+
+
+    

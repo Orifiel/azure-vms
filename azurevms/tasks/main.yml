@@ -1,0 +1,31 @@
+---
+# tasks file for azurevms
+- name: Create a Virtual Network
+  import_tasks: 01-create_virtual_network.yml
+
+- name: Create a subnet
+  import_tasks: 02-create_subnet.yml
+
+- name: Create Public IP 
+  import_tasks: 03-create_pip.yml
+
+- name: Create Security group
+  import_tasks: 04-create_nsg.yml
+
+- name: Create Virtual Nic
+  import_tasks: 05-create_virtualnic.yml
+
+- name: Create Storace Account 
+  import_tasks: 06-create_storage_acc.yml
+
+- name: Create a VM
+  import_tasks: 07-create_vm.yml
+
+- name: Get IP Public information
+  ansible.builtin.azure_rm_publicipaddress_info:
+        resource_group: "{{ rg_name }}"
+  register: output_ip
+        
+- name: Show Public "IP
+  debug:
+      msg: "O IP Público é {{ output_ip.publicipaddresses[0].ip_address }}"

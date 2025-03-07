@@ -1,0 +1,22 @@
+---
+    - name: Create a subnet
+
+      azure.azcollection.azure_rm_subnet:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        virtual_network_name: "{{ vnet_name }}"
+
+        name: "{{ subnet_name }}"
+
+        address_prefix: "172.18.190.0/24"
+
+      register: subnet

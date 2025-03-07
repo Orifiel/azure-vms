@@ -1,0 +1,20 @@
+---
+    - name: Create a public IP address
+
+      azure.azcollection.azure_rm_publicipaddress:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        allocation_method: static
+
+        name: "{{ vm_name }}-public-ip"
+
+      register: public_ip
