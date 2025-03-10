@@ -1,0 +1,112 @@
+--- # Get facts for the user
+
+- name: Delete Resources of a Virtual Machine on Azure Using Ansible
+
+  hosts: localhost
+
+  gather_facts: false
+--- # Get facts for the user
+
+- name: Delete Resources of a Virtual Machine on Azure Using Ansible
+
+  hosts: localhost
+
+  gather_facts: false
+  
+  tasks:
+
+    - name: Delete a VM
+
+      azure.azcollection.azure_rm_virtualmachine:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vm_name }}"
+
+        state: absent
+
+
+    - name: Delete an Storage Account
+
+      azure_rm_storageaccount:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ storage_account_name }}"
+
+        state: absent
+
+    
+    - name: Delete a network security group
+
+      azure.azcollection.azure_rm_securitygroup:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vm_name }}-nsg"
+
+        state: absent
+
+
+    - name: Delete a subnet
+
+      azure.azcollection.azure_rm_subnet:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+        
+        virtual_network_name: "{{ vnet_name }}"
+
+        name: "{{ subnet_name }}"
+
+        state: absent
+        
+
+    - name: Delete a Virtual Network
+
+      azure.azcollection.azure_rm_virtualnetwork:
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+
+        resource_group: "{{ rg_name }}"
+
+        name: "{{ vnet_name }}"
+
+        state: absent
