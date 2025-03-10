@@ -37,9 +37,9 @@
 
         os_disk_name: "{{ vm_name }}-os-disk"
 
-        network_interface_names:
+        #network_interface_names:
 
-          - "{{ vm_name }}-nic"
+        #  - "{{ vm_name }}-nic"
 
         network_interfaces:
 
