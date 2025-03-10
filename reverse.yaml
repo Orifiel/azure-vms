@@ -5,13 +5,6 @@
   hosts: localhost
 
   gather_facts: false
---- # Get facts for the user
-
-- name: Delete Resources of a Virtual Machine on Azure Using Ansible
-
-  hosts: localhost
-
-  gather_facts: false
   
   tasks:
 
@@ -91,7 +84,7 @@
         name: "{{ subnet_name }}"
 
         state: absent
-        
+
 
     - name: Delete a Virtual Network
 
