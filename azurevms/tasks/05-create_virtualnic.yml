@@ -20,6 +20,6 @@
 
         subnet_name: "{{ subnet_name }}"
 
-        public_ip_name: "{{ vm_name }}-public-ip"
+        public_ip_address_name: "{{ vm_name }}-public-ip"
 
         security_group: "{{ vm_name }}-nsg"
