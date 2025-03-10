@@ -24,6 +24,15 @@
 - name: Get IP Public information
   ansible.builtin.azure_rm_publicipaddress_info:
         resource_group: "{{ rg_name }}"
+
+        subscription_id: "{{ subscription_id }}"
+
+        tenant: "{{ tenant }}"
+
+        client_id: "{{ client_id }}"
+
+        secret: "{{ secret }}"
+        
   register: output_ip
         
 - name: Show Public "IP
